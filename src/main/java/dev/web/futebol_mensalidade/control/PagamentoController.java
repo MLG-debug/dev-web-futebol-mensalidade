@@ -97,7 +97,7 @@ public ResponseEntity<Pagamento> createPagamento(@RequestBody Map<String, Object
         Optional<Jogador> jogador = jogadorRepository.findById(jogadorId);
 
         if (jogador.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
         Pagamento pagamento = new Pagamento(ano, mes, valor, jogador.get());
@@ -140,6 +140,12 @@ public ResponseEntity<Pagamento> createPagamento(@RequestBody Map<String, Object
 	@DeleteMapping("/pagamentos/{id}")
 	public ResponseEntity<Pagamento> deletePagamento(@PathVariable("id") long id) {
 		try {
+      Optional<Pagamento> pagamentoOptional = pagamentoRepository.findById(id);
+
+			if (pagamentoOptional.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+
 			pagamentoRepository.deleteById(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
